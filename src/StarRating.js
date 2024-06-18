@@ -14,7 +14,7 @@ const textStyle = {
   margin: "0",
 };
 export default function StarRating({ maxRating = 5 }) {
-  const [rating, setRating] = useState(3);
+  const [rating, setRating] = useState(0);
   function handleRating(rate) {
     setRating(rate);
   }
@@ -29,7 +29,7 @@ export default function StarRating({ maxRating = 5 }) {
           />
         ))}
       </div>
-      <p style={textStyle}>{rating}</p>
+      <p style={textStyle}>{rating || ""}</p>
     </div>
   );
 }
@@ -41,7 +41,13 @@ const starStyle = {
 };
 function Star({ onRate, full }) {
   return (
-    <span role="button" style={starStyle} onClick={onRate}>
+    <span
+      role="button"
+      style={starStyle}
+      onClick={onRate}
+      onMouseEnter={() => console.log("enter")}
+      onMouseLeave={() => console.log("leave")}
+    >
       {full ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
