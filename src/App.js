@@ -90,6 +90,7 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((watched) => watched.imdbID !== id));
   }
+
   useEffect(
     function () {
       const controller = new AbortController();
@@ -126,6 +127,7 @@ export default function App() {
         setError("");
         return;
       }
+      handleCloseMovie();
       fetchMovies();
 
       return function () {
@@ -321,7 +323,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     Year: year,
     imdbRating,
   } = movie;
-  console.log(title);
+  // console.log(title);
   function handleAdd() {
     const newWatched = {
       imdbID: selectedId,
@@ -338,6 +340,22 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   }
   useEffect(
     function () {
+      function callback(e) {
+        if (e.code === "Escape") {
+          onCloseMovie();
+          // console.log("CLOSING");
+        }
+      }
+      document.addEventListener("keydown", callback);
+
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
+  useEffect(
+    function () {
       async function getMovieDetails() {
         setIsLoading(true);
         const res = await fetch(
@@ -348,6 +366,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
         setMovie(data);
         setIsLoading(false);
       }
+
       getMovieDetails();
     },
     [selectedId]
@@ -360,7 +379,8 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
       return function () {
         document.title = "usePopcorn";
-        console.log(`clean up effect for movie ${title}`);
+        // Explanation of Closure
+        // console.log(`clean up effect for movie ${title}`);
       };
     },
     [title]
